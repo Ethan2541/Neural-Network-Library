@@ -35,7 +35,7 @@ class Module(ABC):
 
         Args:
             input (ndarray): Input data.
-            delta (ndarray): Error of the module.
+            delta (ndarray): Gradients of the next layer.
         """
         pass
 
@@ -45,7 +45,7 @@ class Module(ABC):
         
         Args:
             input (ndarray): Input data.
-            delta (ndarray): Error of the module.
+            delta (ndarray): Gradients of the next layer.
         """
         pass
 
