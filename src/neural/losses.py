@@ -1,4 +1,4 @@
-from Loss import Loss
+from neural.base import Loss
 
 class MSELoss(Loss):
     pass
