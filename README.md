@@ -1,6 +1,6 @@
 # PyLDL
 
-This project aims to create a dedicated library to implement neural networks in Python. It is an assignement part of the course [Machine Learning](https://dac.lip6.fr/master/ml/) from the first year of Sorbonne Université's computer science master.
+Python Lightweight Deep Learning is a project that aims to create a dedicated library to implement basic neural networks in Python. It is an assignement part of the course [Machine Learning](https://dac.lip6.fr/master/ml/) from the first year of Sorbonne Université's computer science master.
 
 
 ## Linear Modules
