@@ -18,7 +18,7 @@ class Optim(object):
         self._network.update_parameters(self._gradient_step)
 
 
-def SGD(network, X, y, loss, batch_size=64, gradient_step=1e-3, n_iter=1000):
+def SGD(network, loss, X, y, batch_size=64, gradient_step=1e-3, n_iter=1000):
     batches = create_minibatches(X, y, batch_size)
     optimizer = Optim(network, loss, gradient_step)
     for _ in range(n_iter):

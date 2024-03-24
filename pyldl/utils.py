@@ -22,6 +22,13 @@ def create_minibatches(datax, datay, batch_size):
     return minibatches
 
 
+def encode_one_hot(y):
+    n_classes = len(np.unique(y))
+    one_hot = np.zeros((y.shape[0], n_classes))
+    one_hot[np.arange(y.shape[0]), y.flatten()] = 1
+    return one_hot
+
+
 def plot_data(data, labels=None):
     """
     Affiche des donnees 2D
