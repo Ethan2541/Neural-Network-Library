@@ -5,15 +5,20 @@ import numpy as np
 class Module(ABC):
     def __init__(self):
         self._parameters = None
+        self._bias = None
         self._gradient = None
+        self._gradient_bias = None
 
-    @abstractmethod
+    def __call__(self, *args, **kwds):
+        return self.forward(*args, **kwds)
+
     def zero_grad(self):
         """Sets the gradient of the parameters to zero.
         
         This function is used to reset the gradient of the parameters of the module.
         """
         self._gradient = np.zeros_like(self._parameters)
+        self._gradient_bias = np.zeros_like(self._bias)
 
     @abstractmethod
     def forward(self, X):
@@ -52,7 +57,7 @@ class Module(ABC):
             delta (ndarray): Derivatives of the network's next layer.
 
         Returns:
-            ndarray: Derivate of the error.
+            ndarray: Derivative of the error with respect to the input and the next layer's delta.
         """
         pass
 
@@ -65,7 +70,21 @@ class Module(ABC):
             gradient_step (float): Step size of the gradient descent.
         """
         self._parameters -= gradient_step*self._gradient
+        self._bias -= gradient_step*self._gradient_bias
 
+
+class Activation(Module):
+    def __init__(self):
+        super().__init__()
+
+    def backward_update_gradient(self, input, delta):
+        pass
+
+    def update_parameters(self, gradient_step=1e-3):
+        pass
+
+    def zero_grad(self):
+        pass
 
 
 class Loss(ABC):
@@ -80,7 +99,7 @@ class Loss(ABC):
             yhat (ndarray): Prediction data.
 
         Returns:
-            float: Loss value.
+            ndarray: Loss value for each observation.
         """
         pass
 
