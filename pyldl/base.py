@@ -88,6 +88,9 @@ class Activation(Module):
 
 
 class Loss(ABC):
+    def __call__(self, *args, **kwds):
+        return self.forward(*args, **kwds)
+    
     @abstractmethod
     def forward(self, y, yhat):
         """Forward pass of the loss.

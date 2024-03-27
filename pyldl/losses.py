@@ -14,10 +14,10 @@ class MSELoss(Loss):
 
 class CrossEntropyLoss(Loss):
     def forward(self, y, yhat):
-        return -(y * np.log(yhat)).sum(axis=1)
+        return -(y * np.log(yhat)).sum(axis=1, keepdims=True)
     
     def backward(self, y, yhat):
-        return -(y / yhat).sum(axis=1)
+        return yhat.sum(axis=1, keepdims=True) - y
 
     
 # class CrossEntropyLogSoftmax(Loss):

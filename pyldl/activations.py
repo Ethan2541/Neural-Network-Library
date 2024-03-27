@@ -21,7 +21,7 @@ class Sigmoid(Activation):
 
 class Softmax(Activation):
     def forward(self, X):
-        exp_X = np.exp(X)
+        exp_X = np.exp(X - np.max(X, axis=-1, keepdims=True))
         return exp_X / np.sum(exp_X, axis=1, keepdims=True)
     
     def backward_delta(self, input, delta):
