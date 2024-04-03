@@ -19,20 +19,11 @@ class Sigmoid(Activation):
         return delta * (1 - sigmoid) * sigmoid
     
 
-# class Softmax(Activation):
-#     def forward(self, X):
-#         exp_X = np.exp(X - np.max(X, axis=-1, keepdims=True))
-#         return exp_X / np.sum(exp_X, axis=1, keepdims=True)
+class Softmax(Activation):
+    def forward(self, X):
+        exp_X = np.exp(X - np.max(X, axis=-1, keepdims=True))
+        return exp_X / np.sum(exp_X, axis=1, keepdims=True)
     
-#     def backward_delta(self, input, delta):
-#         softmax = self(input)
-#         return delta * softmax * (1 - softmax)
-
-
-# class LogSoftmax(Activation):
-#     def forward(self, X):
-#         return X - np.log(np.sum(np.exp(X), axis=1, keepdims=True))
-    
-#     def backward_delta(self, input, delta):
-#         softmax = np.exp(self(input))
-#         return delta * (1 - softmax)
+    def backward_delta(self, input, delta):
+        softmax = self(input)
+        return delta * softmax * (1 - softmax)
