@@ -27,3 +27,11 @@ class Softmax(Activation):
     def backward_delta(self, input, delta):
         softmax = self(input)
         return delta * softmax * (1 - softmax)
+    
+
+class ReLU(Activation):
+    def forward(self, X):
+        return np.maximum(0, X)
+    
+    def backward_delta(self, input, delta):
+        return delta * (input > 0)
