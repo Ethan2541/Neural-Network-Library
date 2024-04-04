@@ -3,9 +3,11 @@ from pyldl.exceptions import DimensionMismatchError
 import numpy as np
 
 class Linear(Module):
-    def __init__(self, in_features, out_features):
-        self._bias = np.random.rand(out_features)
-        self._parameters = np.random.rand(in_features, out_features)
+    def __init__(self, in_features, out_features, bias=True):
+        bound = 1. / np.sqrt(in_features)
+        self._parameters = np.random.uniform(low=-bound, high=bound, size=(in_features, out_features))
+        if bias:
+            self._bias = np.random.uniform(low=-bound, high=bound, size=(1, out_features))
         self.zero_grad()
         
     def forward(self, X):
@@ -17,7 +19,8 @@ class Linear(Module):
         if input.shape[0] != delta.shape[0]:
             raise DimensionMismatchError(f"(_, {delta.shape[0]})", input.shape)
         self._gradient += input.T @ delta
-        self._gradient_bias += delta.sum(axis=0)
+        if self._bias is not None:
+            self._gradient_bias += delta.sum(axis=0)
 
     def backward_delta(self, input, delta):
         if delta.shape[1] != self._parameters.shape[1]:

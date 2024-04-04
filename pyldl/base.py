@@ -18,7 +18,8 @@ class Module(ABC):
         This function is used to reset the gradient of the parameters of the module.
         """
         self._gradient = np.zeros_like(self._parameters)
-        self._gradient_bias = np.zeros_like(self._bias)
+        if self._bias is not None:
+            self._gradient_bias = np.zeros_like(self._bias)
 
     @abstractmethod
     def forward(self, X):
@@ -70,7 +71,8 @@ class Module(ABC):
             gradient_step (float): Step size of the gradient descent.
         """
         self._parameters -= gradient_step*self._gradient
-        self._bias -= gradient_step*self._gradient_bias
+        if self._bias is not None:
+            self._bias -= gradient_step*self._gradient_bias
 
 
 class Activation(Module):
