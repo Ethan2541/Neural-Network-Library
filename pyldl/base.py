@@ -17,7 +17,8 @@ class Module(ABC):
         
         This function is used to reset the gradient of the parameters of the module.
         """
-        self._gradient = np.zeros_like(self._parameters)
+        if self._parameters is not None:
+            self._gradient = np.zeros_like(self._parameters)
         if self._bias is not None:
             self._gradient_bias = np.zeros_like(self._bias)
 
@@ -70,7 +71,8 @@ class Module(ABC):
         Args:
             gradient_step (float): Step size of the gradient descent.
         """
-        self._parameters -= gradient_step*self._gradient
+        if self._parameters is not None:
+            self._parameters -= gradient_step*self._gradient
         if self._bias is not None:
             self._bias -= gradient_step*self._gradient_bias
 

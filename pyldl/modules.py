@@ -13,7 +13,10 @@ class Linear(Module):
     def forward(self, X):
         if X.shape[1] != self._parameters.shape[0]:
             raise DimensionMismatchError(f"(_, {self._parameters.shape[0]})", X.shape)
-        return X @ self._parameters + self._bias
+        if self._bias is not None:
+            return X @ self._parameters + self._bias
+        else:
+            return X @ self._parameters
     
     def backward_update_gradient(self, input, delta):
         if input.shape[0] != delta.shape[0]:
