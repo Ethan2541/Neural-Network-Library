@@ -5,7 +5,7 @@ Python Lightweight Deep Learning is a project that aims to create a dedicated li
 
 ## Linear Modules
 
-Linear modules are the most basic elements of any neural network. They are thoroughly tested in the notebook `experiments/linear_network`.
+Linear modules are the most basic elements of any neural network. They are thoroughly tested in the notebook `experiments/linear_network.ipynb`.
 
 ### Linear Module
 
@@ -18,9 +18,9 @@ The `MSELoss` simply implements the mean square error loss between the predicted
 
 ## Nonlinear Modules
 
-Nonlinear modules are basically activation functions which inherit the characteristics of the module `Activation`. As such, they only have a forward and a backward pass. They don't have any parameter to update or to reset.
+Nonlinear modules are basically activation functions which inherit the characteristics of the module `Activation`, available in `pyldl/activations.py`. As such, they only have a forward and a backward pass. They don't have any parameter to update or to reset. Tests can be found in `experiments/activation_network.ipynb`
 
-### Hyperbolic Tangent activation function
+### Hyperbolic Tangent
 
 First, we considered the hyperbolic tangent:
 $$tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$$
@@ -28,7 +28,7 @@ $$tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$$
 It is easily implemented thanks to `numpy`'s built-in function `tanh`. Its derivative is given by:
 $$tanh'(x) = 1 - tanh^2(x)$$
 
-### Sigmoid activation function
+### Sigmoid
 
 We also implemented the sigmoid function:
 $$\sigma(x) = \frac{1}{1 + e^{-x}}$$
@@ -36,21 +36,34 @@ $$\sigma(x) = \frac{1}{1 + e^{-x}}$$
 Its derivative is:
 $$\sigma'(x) = \sigma(x)(1 - \sigma(x))$$
 
-### Softmax activation function
+### Softmax
 
 In order to represent distributions in the case of multiclass for example, we implemented a `Softmax` module. The forward pass is given by:
-$$softmax(x)_i = \frac{e^{x_i}}{\sum_{k=1}^K e^{x_k}}$$
+$$Softmax_i(x) = \frac{e^{x_i}}{\sum_k e^{x_k}}$$
 
-### Rectified Linear Unit activation function
+The derivative of the softmax activation function is:
+$$Softmax_i'(x) = Softmax_i(x) * (1 - Softmax_i(x))$$
+
+### Rectified Linear Unit
 
 The ReLU activation function is very useful, especially for convolutional networks. Its expression is simple:
-$$relu(x) = \max(0,x)$$
+$$ReLU(x) = \max(0,x)$$
+
+Its derivative is thus either $0$ (if x is negative or zero) or $1$.
 
 
 ## Encapsulation
 
+This section focuses on the creation and the training of a network. Experiments can be found in `experiments/sequential_network.ipynb`. The tasks and the random seed are the same as the two previous notebooks. As such, they should yield the exact same results.
+
 ### Sequential Network
+
+The class `Sequential`, available in `pyldl/layers.py`, represents a network and encapsulates a list of `Module` objects. Its forward pass is the sequence of forward passes, each having as input the output of the previous layer. The backward pass is designed in the same fashion. Additionnally, the backpropagation is ensured by both the `backward()` and the `update_parameters()` methods.
 
 ### Optimization
 
+In the file `pyldl/optimizers.py`, we implemented a class `Optim` which encompasses a whole step of a network (forward pass + backpropagation + parameters update) and a function `SGD` which trains the network over a definite amount of epochs. The training phase of `SGD` is a minibatch gradient descent (depending on the size of the batches, the descent can either be stochastic or batch).
+
 ### A specific type of network: the AutoEncoder
+
+An autoencoder is a network divided into two parts: the encoder and the decoder. Basically, the encoder gives a representation of the input in a latent space whose dimension is smaller than the original space. Then, the decoder returns a new representation (that should be faithful to the given input) in the original space. Also, both the decoder and the encoder should have the same amount of layers, set in a sort of symetric way. For example, if the encoder encapsulates: [Linear(64,16), Linear(16,2)], the decoder should have the same layers in reverse order, with inverted in-features / out-features: [Linear(2,16), Linear(16,64)]. The class `AutoEncoder` is available in `pyldl/layers.py`.
