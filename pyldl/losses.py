@@ -19,7 +19,7 @@ class CrossEntropyLoss(Loss):
     
     def backward(self, y, yhat):
         exp_yhat = np.exp(yhat - np.max(yhat, axis=-1, keepdims=True))
-        return exp_yhat / np.sum(exp_yhat, axis=1, keepdims=True) - y
+        return exp_yhat / np.sum(exp_yhat, axis=-1, keepdims=True) - y
     
 
 class BCELoss(Loss):
