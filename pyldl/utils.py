@@ -29,6 +29,11 @@ def encode_one_hot(y):
     return one_hot
 
 
+def kullback_leibler_divergence(d_pred, d_true):
+    d_pred, d_true = np.array(d_pred), np.array(d_true)
+    return np.sum(d_true * np.log(d_true / d_pred))
+
+
 def plot_data(data, labels=None):
     """
     Affiche des donnees 2D
