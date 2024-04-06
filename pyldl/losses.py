@@ -23,9 +23,10 @@ class CrossEntropyLoss(Loss):
     
 
 class BCELoss(Loss):
+
     def forward(self, y, yhat):
         lower_bound = -100
-        return np.mean(-y*np.max(lower_bound, np.log(yhat)) - (1-y)*np.max(lower_bound, np.log(1-yhat)))
+        return np.mean(-y*np.maximum(lower_bound, np.log(yhat)) - (1-y)*np.maximum(lower_bound, np.log(1-yhat)))
     
     def backward(self, y, yhat):
         lower_bound = 1e-10
