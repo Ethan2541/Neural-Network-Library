@@ -29,3 +29,14 @@ class Linear(Module):
         if delta.shape[1] != self._parameters.shape[1]:
             raise DimensionMismatchError(f"(_, {self._parameters.shape[1]})", delta.shape)
         return delta @ self._parameters.T
+
+
+class Flatten(Module):
+    def forward(self, X):
+        return X.reshape(X.shape[0], -1)
+    
+    def backward_update_gradient(self, input, delta):
+        pass
+    
+    def backward_delta(self, input, delta):
+        return delta.reshape(input.shape)
