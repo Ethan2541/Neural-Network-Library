@@ -4,6 +4,7 @@ import numpy as np
 
 class Linear(Module):
     def __init__(self, in_features, out_features, bias=True):
+        super().__init__()
         bound = 1. / np.sqrt(in_features)
         self._parameters = np.random.uniform(low=-bound, high=bound, size=(in_features, out_features))
         if bias:
@@ -40,3 +41,39 @@ class Flatten(Module):
     
     def backward_delta(self, input, delta):
         return delta.reshape(input.shape)
+    
+
+class Conv1D(Module):
+    def __init__(self, k_size, chan_in, chan_out, stride, bias=True):
+        super().__init__()
+        self._stride = stride
+        bound = 1. / np.sqrt(chan_in)
+        self._parameters = np.random.uniform(low=-bound, high=bound, size=(k_size, chan_in, chan_out))
+        if bias:
+            self._bias = np.random.uniform(low=-bound, high=bound, size=(1, chan_out))
+        self.zero_grad()
+
+    def forward(self, X):
+        pass
+
+    def backward_update_gradient(self, input, delta):
+        pass
+
+    def backward_delta(self, input, delta):
+        pass
+
+
+class MaxPool1D(Module):
+    def __init__(self, k_size, stride):
+        super().__init__()
+        self._k_size = k_size
+        self._stride = stride
+
+    def forward(self, X):
+        pass
+
+    def backward_update_gradient(self, input, delta):
+        pass
+
+    def backward_delta(self, input, delta):
+        pass
