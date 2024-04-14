@@ -47,7 +47,7 @@ class Conv1D(Module):
         batch_size, length = X.shape[:2]
 
         d_out = (length - k_size)//self._stride + 1
-        X_view = np.lib.stride_tricks.sliding_window_view(X, (1, k_size, chan_in))[::1, ::self._stride, ::1]
+        X_view = np.lib.stride_tricks.sliding_window_view(X, (1, k_size, chan_in))[:, ::self._stride, :]
         X_view = X_view.reshape(batch_size, d_out, chan_in, k_size)
 
         output = np.einsum("bdik, kio -> bdo", X_view, self._parameters)
@@ -60,7 +60,7 @@ class Conv1D(Module):
         batch_size, length = input.shape[:2]
 
         d_out = (length - k_size)//self._stride + 1
-        X_view = np.lib.stride_tricks.sliding_window_view(input, (1, k_size, chan_in))[::1, ::self._stride, ::1]
+        X_view = np.lib.stride_tricks.sliding_window_view(input, (1, k_size, chan_in))[:, ::self._stride, :]
         X_view = X_view.reshape(batch_size, d_out, chan_in, k_size)
 
         self._gradient += np.einsum("bdik, kio -> bdo", X_view, self._parameters) / batch_size
@@ -90,7 +90,7 @@ class MaxPool1D(Module):
         batch_size, length, chan_in = X.shape
         d_out = (length - self.k_size)//self._stride + 1
 
-        X_view = np.lib.stride_tricks.sliding_window_view(X, (1, self._k_size, 1))[::1, :: self._stride, ::1]
+        X_view = np.lib.stride_tricks.sliding_window_view(X, (1, self._k_size, 1))[:, ::self._stride, :]
         X_view = X_view.reshape(batch_size, d_out, chan_in, self._k_size)
         return np.max(X_view, axis=-1)
 
@@ -101,7 +101,7 @@ class MaxPool1D(Module):
         batch_size, length, chan_in = input.shape
         out_length = (length - self._k_size) // self._stride + 1
 
-        input_view = np.lib.stride_tricks.sliding_window_view(input, (1, self._k_size, 1))[::1, ::self._stride, ::1]
+        input_view = np.lib.stride_tricks.sliding_window_view(input, (1, self._k_size, 1))[:, ::self._stride, :]
         input_view = input_view.reshape(batch_size, out_length, chan_in, self._k_size)
 
         idx = np.argmax(input_view, axis=-1)
