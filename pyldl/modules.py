@@ -63,7 +63,7 @@ class Conv1D(Module):
         X_view = np.lib.stride_tricks.sliding_window_view(input, (1, k_size, chan_in))[:, ::self._stride, :]
         X_view = X_view.reshape(batch_size, d_out, chan_in, k_size)
 
-        self._gradient += np.einsum("bdik, kio -> bdo", X_view, self._parameters) / batch_size
+        self._gradient += np.einsum("bdik, bdo -> kio", X_view, self._parameters) / batch_size
         if self._bias is not None:
             self._gradient_bias += delta.sum(axis=(0,1)) / batch_size
 
