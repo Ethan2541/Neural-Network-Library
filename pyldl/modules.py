@@ -30,17 +30,6 @@ class Linear(Module):
         if delta.shape[1] != self._parameters.shape[1]:
             raise DimensionMismatchError(f"(_, {self._parameters.shape[1]})", delta.shape)
         return delta @ self._parameters.T
-
-
-class Flatten(Module):
-    def forward(self, X):
-        return X.reshape(X.shape[0], -1)
-    
-    def backward_update_gradient(self, input, delta):
-        pass
-    
-    def backward_delta(self, input, delta):
-        return delta.reshape(input.shape)
     
 
 class Conv1D(Module):
@@ -54,13 +43,41 @@ class Conv1D(Module):
         self.zero_grad()
 
     def forward(self, X):
-        pass
+        k_size, chan_in = self._parameters.shape[:2]
+        batch_size, length = X.shape[:2]
+
+        d_out = (length - k_size)//self._stride + 1
+        X_view = np.lib.stride_tricks.sliding_window_view(X, (1, k_size, chan_in))[::1, ::self._stride, ::1]
+        X_view = X_view.reshape(batch_size, d_out, chan_in, k_size)
+
+        output = np.einsum("bdik, kio -> bdo", X_view, self._parameters)
+        if self._bias is not None:
+            output += self._bias
+        return output
 
     def backward_update_gradient(self, input, delta):
-        pass
+        k_size, chan_in = self._parameters.shape[:2]
+        batch_size, length = input.shape[:2]
+
+        d_out = (length - k_size)//self._stride + 1
+        X_view = np.lib.stride_tricks.sliding_window_view(input, (1, k_size, chan_in))[::1, ::self._stride, ::1]
+        X_view = X_view.reshape(batch_size, d_out, chan_in, k_size)
+
+        self._gradient += np.einsum("bdik, kio -> bdo", X_view, self._parameters) / batch_size
+        if self._bias is not None:
+            self._gradient_bias += delta.sum(axis=(0,1)) / batch_size
 
     def backward_delta(self, input, delta):
-        pass
+        k_size = self._parameters.shape[0]
+        length = input.shape[1]
+
+        d_out = (length - k_size)//self._stride + 1
+        convolution = np.einsum("bdo, kio -> kbdi", delta, self._parameters)
+
+        output = np.zeros_like(input)
+        for i in range(k_size):
+            output[:, i:i+d_out*self._stride:self._stride, :] += convolution[:, i]
+        return output
 
 
 class MaxPool1D(Module):
@@ -70,10 +87,35 @@ class MaxPool1D(Module):
         self._stride = stride
 
     def forward(self, X):
-        pass
+        batch_size, length, chan_in = X.shape
+        d_out = (length - self.k_size)//self._stride + 1
+
+        X_view = np.lib.stride_tricks.sliding_window_view(X, (1, self._k_size, 1))[::1, :: self._stride, ::1]
+        X_view = X_view.reshape(batch_size, d_out, chan_in, self._k_size)
+        return np.max(X_view, axis=-1)
 
     def backward_update_gradient(self, input, delta):
         pass
 
     def backward_delta(self, input, delta):
+        batch_size, length, chan_in = input.shape
+        out_length = (length - self._k_size) // self._stride + 1
+
+        input_view = np.lib.stride_tricks.sliding_window_view(input, (1, self._k_size, 1))[::1, ::self._stride, ::1]
+        input_view = input_view.reshape(batch_size, out_length, chan_in, self._k_size)
+
+        idx = np.argmax(input_view, axis=-1)
+        output = np.zeros_like(input)
+        output[np.repeat(range(batch_size), chan_in), idx, list(range(chan_in))*batch_size] = delta[range(batch_size), idx, range(chan_in)]
+        return output
+
+
+class Flatten(Module):
+    def forward(self, X):
+        return X.reshape(X.shape[0], -1)
+    
+    def backward_update_gradient(self, input, delta):
         pass
+    
+    def backward_delta(self, input, delta):
+        return delta.reshape(input.shape)
