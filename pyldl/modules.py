@@ -72,11 +72,11 @@ class Conv1D(Module):
         length = input.shape[1]
 
         d_out = (length - k_size)//self._stride + 1
-        convolution = np.einsum("bdo, kio -> kbdi", delta, self._parameters)
+        convolution = np.einsum("bdo, kio -> kbdi", delta, self._parameters).astype(input.dtype)
 
         output = np.zeros_like(input)
         for i in range(k_size):
-            output[:, i:i+d_out*self._stride:self._stride, :] += convolution[:, i]
+            output[:, i:i+d_out*self._stride:self._stride, :] += convolution[i]
         return output
 
 
@@ -88,7 +88,7 @@ class MaxPool1D(Module):
 
     def forward(self, X):
         batch_size, length, chan_in = X.shape
-        d_out = (length - self.k_size)//self._stride + 1
+        d_out = (length - self._k_size)//self._stride + 1
 
         X_view = np.lib.stride_tricks.sliding_window_view(X, (1, self._k_size, 1))[:, ::self._stride, :]
         X_view = X_view.reshape(batch_size, d_out, chan_in, self._k_size)
@@ -105,8 +105,14 @@ class MaxPool1D(Module):
         input_view = input_view.reshape(batch_size, out_length, chan_in, self._k_size)
 
         idx = np.argmax(input_view, axis=-1)
+        batch_idx, d_idx, chan_idx = np.meshgrid(
+            range(batch_size),
+            range(out_length),
+            range(chan_in),
+            indexing="ij",
+        )
         output = np.zeros_like(input)
-        output[np.repeat(range(batch_size), chan_in), idx, list(range(chan_in))*batch_size] = delta[range(batch_size), idx, range(chan_in)]
+        output[batch_idx, d_idx*self._stride + idx, chan_idx] += delta[batch_idx, idx, chan_idx]
         return output
 
 
