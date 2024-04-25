@@ -21,13 +21,13 @@ class CrossEntropyLoss(Loss):
         exp_yhat = np.exp(yhat - np.max(yhat, axis=-1, keepdims=True))
         return exp_yhat / np.sum(exp_yhat, axis=-1, keepdims=True) - y
     
-
 class BCELoss(Loss):
-
     def forward(self, y, yhat):
-        lower_bound = -100
-        return np.mean(-y*np.maximum(lower_bound, np.log(yhat)) - (1-y)*np.maximum(lower_bound, np.log(1-yhat)))
+        epsilon = 1e-12
+        y_pred = np.clip(yhat, epsilon, 1 - epsilon)
+        return -np.mean(y * np.log(y_pred) + (1 - y) * np.log(1 - y_pred))
     
     def backward(self, y, yhat):
-        lower_bound = 1e-10
-        return -y/np.maximum(yhat, lower_bound) + (1-y)/np.maximum(1-yhat, lower_bound)
+        epsilon = 1e-12
+        y_pred = np.clip(yhat, epsilon, 1 - epsilon)
+        return (y_pred - y) / (y_pred * (1 - y_pred) * y_pred.shape[0])
