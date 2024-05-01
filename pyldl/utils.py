@@ -134,3 +134,15 @@ def get_usps(l,datax,datay):
 
 def show_usps(data):
     plt.imshow(data.reshape((16,16)),interpolation="nearest",cmap="gray")
+
+def contingency_matrix(y_true, y_pred):
+    unique_true = np.unique(y_true)
+    unique_pred = np.unique(y_pred)
+    num_true = len(unique_true)
+    num_pred = len(unique_pred)
+    contingency_matrix = np.zeros((num_true, num_pred))
+    for i in range(len(y_true)):
+        true_idx = np.where(unique_true == y_true[i])[0][0]
+        pred_idx = np.where(unique_pred == y_pred[i])[0][0]
+        contingency_matrix[true_idx, pred_idx] += 1
+    return contingency_matrix
