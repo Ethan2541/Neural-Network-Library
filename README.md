@@ -26,19 +26,17 @@ The formula of the `MSELoss` and its derivative are given by the following equat
 The `BCELoss` implements the binary cross-entropy loss between the predicted and actual outputs. This loss is decent when handling image reconstruction tasks. Compared to the MSE loss, whose outputs are smoothed, the outputs of the BCE loss are more extreme and either close to 0 or 1. In the case of white and black digit images, it makes the white digits sharper, contrasting with the black background.
 
 Its formula is:
-            $$Loss(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log(\hat{y}_i + \epsilon) + (1 - y_i) \log(1 - \hat{y}_i + \epsilon) \right]$$  
-            where $\epsilon$ is a small value to avoid logarithm of zero. The derivative of the binary cross-entropy is given by:                
-            $$\frac{\partial \text{Loss}}{\partial \hat{y}} = \frac{\hat{y} - y}{(\hat{y} + \epsilon)(1 - \hat{y} + \epsilon) N}$$
+$$Loss(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log(\hat{y}_i + \epsilon) + (1 - y_i) \log(1 - \hat{y}_i + \epsilon) \right]$$  
+where $\epsilon$ is a small value to avoid logarithm of zero. The derivative of the binary cross-entropy is given by:                
+$$\frac{\partial \text{Loss}}{\partial \hat{y}} = \frac{\hat{y} - y}{(\hat{y} + \epsilon)(1 - \hat{y} + \epsilon) N}$$
 
 ### Cross Entropy loss function
 
 The `CrossEntropyLoss` implements the cross-entropy loss between the predicted and actual outputs. It first applies the softmax function to the predicted outputs to obtain the probability distribution over the classes, ensuring numerical stability by subtracting the maximum predicted value. The loss is then calculated as the mean of the negative log likelihood of the true class probabilities. By averaging over all samples, the returned value provides a single scalar loss, which is more convenient to plot across different epochs during the training phase. 
 
 The formula of the `CELoss` and its derivative are given by:
-
-<p align="center">
-  <img src="https://github.com/Ethan2541/PyLDL/assets/123265734/207c2f6b-e80d-48fc-b49d-c73ccba97dfa" alt="Description of the image" width=350/>
-</p>
+$$Loss(y, \hat{y}) = \frac{1}{N} \sum_{i=1}^{N} \left(-\sum_{c=1}^{C} y_{i,c} \hat{y}_ {i,c} + \log\sum_{c=1}^{C} \exp(\hat{y}_ {i,c}) \right)$$
+$$\frac{\partial \text{Loss}}{\partial \hat{y}} = \frac{\exp(\hat{y}_ {i,c} - \max(\hat{y}_ {i}))}{\sum_c \exp(\hat{y}_ {i,c} - \max(\hat{y}_ {i}))} - y_{i,c}$$
 
 ## Nonlinear Modules
 
