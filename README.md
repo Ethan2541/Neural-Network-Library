@@ -75,3 +75,10 @@ In the file `pyldl/optimizers.py`, we implemented a class `Optim` which encompas
 ### A specific type of network: the AutoEncoder
 
 An autoencoder is a network divided into two parts: the encoder and the decoder. Basically, the encoder gives a representation of the input in a latent space whose dimension is smaller than the original space. Then, the decoder returns a new representation (that should be faithful to the given input) in the original space. Also, both the decoder and the encoder should have the same amount of layers, set in a sort of symetric way. For example, if the encoder encapsulates: [Linear(64,16), Linear(16,2)], the decoder should have the same layers in reverse order, with inverted in-features / out-features: [Linear(2,16), Linear(16,64)]. The class `AutoEncoder` is available in `pyldl/layers.py`.
+
+## Convolutional Network
+The use of convolutional neural networks offers numerous advantages for image processing. Convolution allows capturing local patterns, reducing the number of learnable parameters, achieving translation invariance, and reducing data dimensionality. This makes it particularly suitable for images, temporal sequences, or signals.
+
+### Conv1D
+
+### MaxPool1D
