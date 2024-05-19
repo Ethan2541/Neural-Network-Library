@@ -35,10 +35,10 @@ Its formula is:
 The `CrossEntropyLoss` implements the cross-entropy loss between the predicted and actual outputs. It first applies the softmax function to the predicted outputs to obtain the probability distribution over the classes, ensuring numerical stability by subtracting the maximum predicted value. The loss is then calculated as the mean of the negative log likelihood of the true class probabilities. By averaging over all samples, the returned value provides a single scalar loss, which is more convenient to plot across different epochs during the training phase. 
 
 The formula of the `CELoss` and its derivative are given by:
-            $$Loss(y, \hat{y}) = \frac{1}{N} \sum_{i=1}^{N} \left( -\sum_{c=1}^{C} y_{i,c} \hat{y}_{i,c} + \log \sum_{c=1}^{C} \exp(\hat{y}_{i,c}) \right)$$
-            $$\frac{\partial Loss}{\partial \hat{y}} = \frac{\exp(\hat{y}_{i,c} - \max(\hat{y}_{i}))}{\sum_{c=1}^{C} \exp(\hat{y}_{i,c} - \max(\hat{y}_{i}))} - y_{i,c}$$
-                
 
+<p align="center">
+  <img src="https://github.com/Ethan2541/PyLDL/assets/123265734/207c2f6b-e80d-48fc-b49d-c73ccba97dfa" alt="Description of the image" width=350/>
+</p>
 
 ## Nonlinear Modules
 
