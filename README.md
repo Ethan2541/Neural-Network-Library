@@ -15,6 +15,10 @@ The `Linear` module implements a basic linear layer, whose forward pass is a dot
 
 The `MSELoss` simply implements the mean square error loss between the predicted and actual outputs. It is the mean of the squared euclidean norm of the difference of both outputs along the features axis. Instead of returning a vector of these norms, we chose to only return the mean as it is more convenient to plot the loss across the different epochs of the training phase.
 
+### Binary Cross Entropy loss function
+
+The `BCELoss` implements the binary cross-entropy loss between the predicted and actual outputs. This loss is decent when handling image reconstruction tasks. Compared to the MSE loss, whose outputs are smoothed, the outputs of the BCE loss are more extreme and either close to 0 or 1. In the case of white and black digit images, it makes the white digits sharper, contrasting with the black background.
+
 
 ## Nonlinear Modules
 
