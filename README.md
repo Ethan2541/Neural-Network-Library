@@ -80,8 +80,10 @@ An autoencoder is a network divided into two parts: the encoder and the decoder.
 The use of convolutional neural networks offers numerous advantages for image processing. Convolution allows capturing local patterns, reducing the number of learnable parameters, achieving translation invariance, and reducing data dimensionality. This makes it particularly suitable for images, temporal sequences, or signals.
 
 ### Conv1D
-The module `Conv1D($k\_size, chan\_in, chan\_out, stride$)` contains a parameter matrix having the size ($k\_size, chan\_in, chan\_out$), which corresponds to $chan\_out$ filters of size ($k\_size, chan\_in$). Its forward method takes as input a batch of size ($batch, length, chan\_in$) and outputs a matrix of size ($batch, \frac{(length - k\_size)}{stride} + 1, chan\_out$).
+The module `Conv1D(k_size, chan_in, chan_out, stride)` contains a parameter matrix having the size `(k_size, chan_in, chan_out)`, which corresponds to chan_out filters of size `(k_size, chan_in)`. Its forward method takes as input a batch of size `(batch, length, chan_in)` and outputs a matrix of size `(batch, (length - k_size)/stride + 1, chan_out)`.
 
 ### MaxPool1D
+The `MaxPool1D` module, devoid of learnable parameters, operates with a kernel size `k_size` and a stride length `stride`. Its forward method accepts input batches of size `(batch, length, chan_in)` and yields an output matrix of dimensions `(batch, (length - k_size)/stride + 1, chan_in)`.
 
 ### Flatten
+The `Flatten` module transforms input batches of size `(batch, length, chan_in)` into a matrix of dimensions `(batch, length \times chan_in)`.
