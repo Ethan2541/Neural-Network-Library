@@ -15,13 +15,29 @@ The `Linear` module implements a basic linear layer, whose forward pass is a dot
 
 The `MSELoss` simply implements the mean square error loss between the predicted and actual outputs. It is the mean of the squared euclidean norm of the difference of both outputs along the features axis. Instead of returning a vector of these norms, we chose to only return the mean as it is more convenient to plot the loss across the different epochs of the training phase.
 
+The formula of the `MSELoss` and its derivative are given by the following equations:
+              $$Loss(y, \hat{y}) = \frac{1}{N} \sum_{i=1}^{N} \left\| y_i - \hat{y}_i \right\|_2^2$$
+              $$\frac{\partial \text{Loss}}{\partial \hat{y}} = -2 (y - \hat{y})$$
+
+
+
 ### Binary Cross Entropy loss function
 
 The `BCELoss` implements the binary cross-entropy loss between the predicted and actual outputs. This loss is decent when handling image reconstruction tasks. Compared to the MSE loss, whose outputs are smoothed, the outputs of the BCE loss are more extreme and either close to 0 or 1. In the case of white and black digit images, it makes the white digits sharper, contrasting with the black background.
 
+Its formula is:
+            $$Loss(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log(\hat{y}_i + \epsilon) + (1 - y_i) \log(1 - \hat{y}_i + \epsilon) \right]$$  
+            where $\epsilon$ is a small value to avoid logarithm of zero. The derivative of the binary cross-entropy is given by:                
+            $$\frac{\partial \text{Loss}}{\partial \hat{y}} = \frac{\hat{y} - y}{(\hat{y} + \epsilon)(1 - \hat{y} + \epsilon) N}$$
+
 ### Cross Entropy loss function
 
 The `CrossEntropyLoss` implements the cross-entropy loss between the predicted and actual outputs. It first applies the softmax function to the predicted outputs to obtain the probability distribution over the classes, ensuring numerical stability by subtracting the maximum predicted value. The loss is then calculated as the mean of the negative log likelihood of the true class probabilities. By averaging over all samples, the returned value provides a single scalar loss, which is more convenient to plot across different epochs during the training phase. 
+
+The formula of the `CELoss` and its derivative are given by:
+            $$Loss(y, \hat{y}) = \frac{1}{N} \sum_{i=1}^{N} \left( -\sum_{c=1}^{C} y_{i,c} \hat{y}_{i,c} + \log \sum_{c=1}^{C} \exp(\hat{y}_{i,c}) \right)$$
+            $$\frac{\partial Loss}{\partial \hat{y}} = \frac{\exp(\hat{y}_{i,c} - \max(\hat{y}_{i}))}{\sum_{c=1}^{C} \exp(\hat{y}_{i,c} - \max(\hat{y}_{i}))} - y_{i,c}$$
+                
 
 
 ## Nonlinear Modules
