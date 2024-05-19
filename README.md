@@ -80,5 +80,8 @@ An autoencoder is a network divided into two parts: the encoder and the decoder.
 The use of convolutional neural networks offers numerous advantages for image processing. Convolution allows capturing local patterns, reducing the number of learnable parameters, achieving translation invariance, and reducing data dimensionality. This makes it particularly suitable for images, temporal sequences, or signals.
 
 ### Conv1D
+The module `Conv1D($k\_size, chan\_in, chan\_out, stride$)` contains a parameter matrix having the size ($k\_size, chan\_in, chan\_out$), which corresponds to $chan\_out$ filters of size ($k\_size, chan\_in$). Its forward method takes as input a batch of size ($batch, length, chan\_in$) and outputs a matrix of size ($batch, \frac{(length - k\_size)}{stride} + 1, chan\_out$).
 
 ### MaxPool1D
+
+### Flatten
